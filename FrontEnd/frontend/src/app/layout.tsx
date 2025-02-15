@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Tomorrow, Poppins } from "next/font/google";
+import { Tomorrow } from "next/font/google";
 import "./globals.css";
 import Header from './components/header';
 import Footer from './components/footer'

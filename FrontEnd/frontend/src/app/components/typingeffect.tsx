@@ -7,7 +7,6 @@ const TypingEffect = () => {
   const [displayedText, setDisplayedText] = useState('');
   const [index, setIndex] = useState(0);
   const [isImageVisible, setIsImageVisible] = useState(true);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [, setIsTypingComplete] = useState(false);
 
   useEffect(() => {
