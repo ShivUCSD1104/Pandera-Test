@@ -1,6 +1,6 @@
 Frontend/frontend/node_modules/*
 IVSurface/__pycache__/*
-OrderFlowCanyon/.env
+flask-compute/OrderFlowCanyon/.env
 Frontend/node-server/node_modules/*
 Frontend/node_modules/*
 .env
