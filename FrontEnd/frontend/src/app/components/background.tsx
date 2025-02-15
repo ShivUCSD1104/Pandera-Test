@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Image from 'next/image';
 
 const images = [
   '/gears.svg',
@@ -24,13 +25,15 @@ const RandomBackdrop = () => {
   return (
     <div className="absolute inset-0 overflow-hidden" style={{ zIndex: 0}}>
       {positions.map((pos, index) => (
-        <img
-          key={index}
-          src={pos.src}
-          alt={`Random SVG ${index}`}
-          className="absolute"
-          style={{ top: pos.top, left: pos.left, width: '50px', height: '50px' }}
-        />
+        <Image
+        key={index}
+        src={pos.src}
+        alt={`Random SVG ${index}`}
+        className="absolute"
+        style={{ top: pos.top, left: pos.left }}
+        width={50}
+        height={50}
+      />
       ))}
     </div>
   );

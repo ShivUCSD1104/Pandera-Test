@@ -27,7 +27,7 @@ const Header = () => {
                 className={`text-xl px-6 py-3 text-gray-600 rounded-lg transition-all duration-300 
                 ${isActiveLink('/')}`}
               >
-                ///pandera
+                {'///pandera'}
               </Link>
             </div>
             <ul className="flex items-center space-x-4">

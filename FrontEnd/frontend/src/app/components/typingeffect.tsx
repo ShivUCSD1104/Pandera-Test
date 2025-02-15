@@ -1,12 +1,14 @@
 'use client';
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
 
 const TypingEffect = () => {
   const text = "(base) ///pandera @UCSD ~ %";
   const [displayedText, setDisplayedText] = useState('');
   const [index, setIndex] = useState(0);
   const [isImageVisible, setIsImageVisible] = useState(true);
-  const [isTypingComplete, setIsTypingComplete] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [, setIsTypingComplete] = useState(false);
 
   useEffect(() => {
     const typingInterval = setInterval(() => {
@@ -34,9 +36,11 @@ const TypingEffect = () => {
     <div className="flex items-center">
       <h1 className="text-6xl font-black text-black flex">
         {displayedText}
-        <img
+        <Image
           src="/rec.svg"
           alt="Icon"
+          width={64}
+          height={64}
           className={`h-16 w-16 transition-opacity duration-500 ${
             isImageVisible ? 'opacity-100' : 'opacity-0'
           }`}

@@ -66,6 +66,7 @@ const getDateRange = (graphType: string) => {
 
 const Modal = ({ isOpen, onClose, cardData }: ModalProps) => {
   const [selections, setSelections] = useState<{ [key: string]: string }>({});
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [plotData, setPlotData] = useState<any>(null);
 
   useEffect(() => {

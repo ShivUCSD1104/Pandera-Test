@@ -1,7 +1,5 @@
 'use client';
 
-import MarkdownRenderer from '../components/MarkdownRenderer'; 
-
 export default function MyNotePage() {
   return (
     <div>
@@ -9,7 +7,7 @@ export default function MyNotePage() {
       <div className="bg-white p-4 rounded-2xl shadow-[8px_8px_16px_#bebebe] hover:shadow-inner hover:shadow-gray-300">
         <div className="flex flex-col items-center">
           <div className="text-2xl text-black">Shiv Mehta - Founder & President</div>
-          <div className="text-xl text-black">Data Science @ UCSD '27</div>
+          <div className="text-xl text-black">{"Data Science @ UCSD '27"}</div>
           <br />
           <div className='text-sm text-black'>Lorem ipsum dolor sit amet consectetur adipisicing elit. Corporis excepturi error consequuntur nam, necessitatibus deserunt similique ipsa rem dolorem doloribus!</div>
           <br />

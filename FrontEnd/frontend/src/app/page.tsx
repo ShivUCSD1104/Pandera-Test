@@ -1,5 +1,4 @@
 import Link from 'next/link'
-import RandomBackdrop from './components/background';
 import TypingEffect from './components/typingeffect';
 import Terminal from './components/shell'
 import AnimatedTags from './components/tags';
