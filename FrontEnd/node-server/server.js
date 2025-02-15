@@ -4,7 +4,7 @@ const axios = require('axios');
 const bodyParser = require('body-parser');
 
 const app = express();
-const PORT = 3001; // or any port you prefer
+const PORT = process.env.port || 3001; // or any port you prefer
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -13,7 +13,7 @@ app.post('/api/compute', async (req, res) => {
   try {
     const { parameters, graphType } = req.body;
 
-    const response = await axios.post('flask.pandera.net/compute', { parameters, graphType });
+    const response = await axios.post('https://flask.pandera.net/compute', { parameters, graphType });
     
     res.json(response.data);
   } catch (error) {

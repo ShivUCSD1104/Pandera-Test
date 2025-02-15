@@ -97,7 +97,7 @@ const Modal = ({ isOpen, onClose, cardData }: ModalProps) => {
         }
       });
 
-      const res = await axios.post('api.pandera.net/api/compute', { 
+      const res = await axios.post('https://api.pandera.net/api/compute', { 
         parameters,
         graphType: cardData.type
       });
