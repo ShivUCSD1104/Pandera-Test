@@ -80,7 +80,7 @@ export default function Models() {
                 className="rounded-2xl p-6 bg-white shadow-[8px_8px_16px_#bebebe] group hover:shadow-inner hover:shadow-gray-300"
                 onClick={() => openModal(card)}
               >
-                <div className="rounded-lg mb-4"><Image alt={card.title} src={card.image} /></div>
+                <div className="rounded-lg mb-4"><Image alt={card.title} src={card.image} width={500} height={500}/></div>
                 <h3 className="text-xl text-black mb-2 text-center">{card.title}</h3>
               </div>
             ))}
