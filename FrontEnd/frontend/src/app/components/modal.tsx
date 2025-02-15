@@ -2,9 +2,11 @@
 
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import Plot from 'react-plotly.js';
+import dynamic from 'next/dynamic';
 import Slider from '@mui/material/Slider';
 import { styled } from '@mui/material/styles';
+
+const Plot = dynamic(() => import('react-plotly.js'), { ssr: false });
 
 interface Constraint {
   label: string;
