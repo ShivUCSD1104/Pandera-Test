@@ -9,7 +9,7 @@ sys.path.insert(0, IVSURFACE_PATH)
 from IVSurface.IVmap import generate_iv_surface_html
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, origins=['https://pandera.net'])
 
 @app.route('/compute', methods=['POST'])
 def compute():
