@@ -13,36 +13,51 @@ CORS(app)
 
 @app.route('/compute', methods=['POST'])
 def compute():
-    data = request.json
-    parameters = data.get('parameters', {})
-    graph_type = data.get('graphType')
+    try:
+        data = request.json
+        print("✅ Received Data:", data)  # Debugging line
 
-    if graph_type == 'IVMap':
-        from IVSurface.IVmap import generate_iv_surface_html
-        fig_json = generate_iv_surface_html(
-            parameters.get('Ticker', 'AAPL'),
-            parameters.get('Start Date'),
-            parameters.get('End Date')
-        )
-    elif graph_type == 'OrderFlowCanyon':
-        from OrderFlowCanyon.main import generate_order_flow_html
-        print('here')
-        fig_json = generate_order_flow_html(
-            parameters.get('Ticker', 'AAPL'),
-            parameters.get('Start Date'),
-            parameters.get('End Date')
-        )
-    elif graph_type == 'USFixedIncomeYield':
-        from YieldCurve.main import generate_yield_curve_html
-        fig_json = generate_yield_curve_html(
-            parameters.get('Issuer', 'US Treasury'),
-            parameters.get('Start Date'),
-            parameters.get('End Date')
-        )
-    else:
-        return jsonify({"error": "Invalid graph type"}), 400
-    
-    return jsonify({"plotly_json": fig_json})
+        if not data:
+            print("❌ Missing request body")
+            return jsonify({"error": "Missing request body"}), 400
+
+        parameters = data.get('parameters', {})
+        graph_type = data.get('graphType')
+
+        print("✅ Graph Type:", graph_type)  # Debugging line
+        print("✅ Parameters:", parameters)  # Debugging line
+
+        if graph_type == 'IVMap':
+            from IVSurface.IVmap import generate_iv_surface_html
+            fig_json = generate_iv_surface_html(
+                parameters.get('Ticker', 'AAPL'),
+                parameters.get('Start Date'),
+                parameters.get('End Date')
+            )
+        elif graph_type == 'OrderFlowCanyon':
+            from OrderFlowCanyon.main import generate_order_flow_html
+            fig_json = generate_order_flow_html(
+                parameters.get('Ticker', 'AAPL'),
+                parameters.get('Start Date'),
+                parameters.get('End Date')
+            )
+        elif graph_type == 'USFixedIncomeYield':
+            from YieldCurve.main import generate_yield_curve_html
+            fig_json = generate_yield_curve_html(
+                parameters.get('Issuer', 'US Treasury'),
+                parameters.get('Start Date'),
+                parameters.get('End Date')
+            )
+        else:
+            print("❌ Invalid graph type")
+            return jsonify({"error": "Invalid graph type"}), 400
+
+        return jsonify({"plotly_json": fig_json})
+
+    except Exception as e:
+        print("🔥 Internal Server Error:", str(e))  # Debugging line
+        return jsonify({"error": "Internal Server Error", "details": str(e)}), 500
+
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))  # Use Railway's assigned port
