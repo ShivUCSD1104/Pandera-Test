@@ -22,7 +22,7 @@ export default function MyNotePage() {
               LinkedIn
             </a>
           </div>
-          <div className="text-2xl text-black">Sukhman Virk Co-Founder</div>
+          <div className="text-2xl text-black">Sukhman Virk - Co-Founder</div>
           <div className="text-xl text-black">{"Mathematics - Computer Science @ UCSD '24"}</div>
           <br />
           <div className='text-sm text-black'>Lorem ipsum dolor sit amet consectetur adipisicing elit. Corporis excepturi error consequuntur nam, necessitatibus deserunt similique ipsa rem dolorem doloribus!</div>
