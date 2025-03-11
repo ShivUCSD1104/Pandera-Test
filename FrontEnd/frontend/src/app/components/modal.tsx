@@ -44,7 +44,7 @@ const getDateRange = (graphType: string) => {
   const startDate = new Date(currentDate);
   const endDate = new Date(currentDate);
 
-  switch(graphType) {
+  switch (graphType) {
     case 'OrderFlowCanyon':
       startDate.setFullYear(currentDate.getFullYear() - 3);
       endDate.setDate(currentDate.getDate() - 2);
@@ -68,8 +68,11 @@ const getDateRange = (graphType: string) => {
 
 const Modal = ({ isOpen, onClose, cardData }: ModalProps) => {
   const [selections, setSelections] = useState<{ [key: string]: string }>({});
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // Holds the graph data once computed.
   const [plotData, setPlotData] = useState<any>(null);
+  // New states for loading and error.
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   useEffect(() => {
     const { startDate, endDate } = getDateRange(cardData.type);
@@ -85,6 +88,9 @@ const Modal = ({ isOpen, onClose, cardData }: ModalProps) => {
   };
 
   const computeGraph = async () => {
+    // Reset state and show loading when starting the API call.
+    setLoading(true);
+    setError('');
     try {
       const parameters: Record<string, string> = {};
       cardData.constraints.forEach((constraint) => {
@@ -103,19 +109,21 @@ const Modal = ({ isOpen, onClose, cardData }: ModalProps) => {
       });
 
       if (res.data.plotly_json) {
-        console.log('Received Plotly JSON:', res.data.plotly_json);
         try {
           const parsed = JSON.parse(res.data.plotly_json);
-          console.log('Parsed data:', parsed.data);
-          console.log('Parsed layout:', parsed.layout);
           setPlotData(parsed);
         } catch (e) {
           console.error('JSON parse error:', e);
+          setError('Error is retrieving the data, yahoo finance might be down');
+          setPlotData(null);
         }
       }
+      setLoading(false);
     } catch (err) {
       console.error(err);
       setPlotData(null);
+      setError('Error is retrieving the data, yahoo finance might be down');
+      setLoading(false);
     }
   };
 
@@ -191,7 +199,11 @@ const Modal = ({ isOpen, onClose, cardData }: ModalProps) => {
           </div>
           <div className="w-2/3 p-4 h-full">
             <div className="bg-fuchsia-100 rounded-lg h-full flex justify-center items-center overflow-auto">
-              {plotData ? (
+              {loading ? (
+                <span>Loading...</span>
+              ) : error ? (
+                <span className="text-red-500">{error}</span>
+              ) : plotData ? (
                 <Plot
                   data={plotData.data}
                   layout={plotData.layout}
