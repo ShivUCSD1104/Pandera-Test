@@ -25,6 +25,12 @@ interface ModalProps {
   cardData: CardData;
 }
 
+// Define a custom interface for Plotly data.
+interface PlotData {
+  data: Plotly.Data[];
+  layout: Partial<Plotly.Layout>;
+}
+
 const CustomSlider = styled(Slider)({
   color: '#3B82F6',
   height: 4,
@@ -69,7 +75,7 @@ const getDateRange = (graphType: string) => {
 const Modal = ({ isOpen, onClose, cardData }: ModalProps) => {
   const [selections, setSelections] = useState<{ [key: string]: string }>({});
   // Holds the graph data once computed.
-  const [plotData, setPlotData] = useState<any>(null);
+  const [plotData, setPlotData] = useState<PlotData | null>(null);
   // New states for loading and error.
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -84,7 +90,7 @@ const Modal = ({ isOpen, onClose, cardData }: ModalProps) => {
   }, [cardData.type]);
 
   const handleSelectionChange = (label: string, value: string) => {
-    setSelections((prev) => ({ ...prev, [label]: value }));
+    setSelections(prev => ({ ...prev, [label]: value }));
   };
 
   const computeGraph = async () => {
@@ -157,13 +163,13 @@ const Modal = ({ isOpen, onClose, cardData }: ModalProps) => {
                           const newValues = values as number[];
                           if (activeThumb === 0) {
                             const newStartDate = new Date(minTimestamp + newValues[0] * 86400000);
-                            setSelections((prev) => ({
+                            setSelections(prev => ({
                               ...prev,
                               'Start Date': newStartDate.toISOString().split('T')[0],
                             }));
                           } else if (activeThumb === 1) {
                             const newEndDate = new Date(minTimestamp + newValues[1] * 86400000);
-                            setSelections((prev) => ({
+                            setSelections(prev => ({
                               ...prev,
                               'End Date': newEndDate.toISOString().split('T')[0],
                             }));
