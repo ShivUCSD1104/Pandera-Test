@@ -25,7 +25,6 @@ interface ModalProps {
   cardData: CardData;
 }
 
-// Define a custom interface for Plotly data.
 interface PlotData {
   data: Plotly.Data[];
   layout: Partial<Plotly.Layout>;
@@ -74,9 +73,7 @@ const getDateRange = (graphType: string) => {
 
 const Modal = ({ isOpen, onClose, cardData }: ModalProps) => {
   const [selections, setSelections] = useState<{ [key: string]: string }>({});
-  // Holds the graph data once computed.
   const [plotData, setPlotData] = useState<PlotData | null>(null);
-  // New states for loading and error.
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -94,7 +91,6 @@ const Modal = ({ isOpen, onClose, cardData }: ModalProps) => {
   };
 
   const computeGraph = async () => {
-    // Reset state and show loading when starting the API call.
     setLoading(true);
     setError('');
     try {
@@ -120,7 +116,7 @@ const Modal = ({ isOpen, onClose, cardData }: ModalProps) => {
           setPlotData(parsed);
         } catch (e) {
           console.error('JSON parse error:', e);
-          setError('Error is retrieving the data, yahoo finance might be down');
+          setError('Error in retrieving the data, Finance API might be down');
           setPlotData(null);
         }
       }
@@ -128,7 +124,7 @@ const Modal = ({ isOpen, onClose, cardData }: ModalProps) => {
     } catch (err) {
       console.error(err);
       setPlotData(null);
-      setError('Error is retrieving the data, yahoo finance might be down');
+      setError('Error in retrieving the data, Finance API might be down');
       setLoading(false);
     }
   };
