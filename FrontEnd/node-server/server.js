@@ -10,9 +10,9 @@ app.use(cors());
 app.use(bodyParser.json());
 
 app.post('/api/compute', async (req, res) => {
+  console.log('Received request:', req.body);
   try {
     const { parameters, graphType } = req.body;
-    console.log('Received request:', parameters, graphType);
     const response = await axios.post('https://flask.pandera.net/compute', { parameters, graphType });
     
     res.json(response.data);
