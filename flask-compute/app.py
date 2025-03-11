@@ -16,7 +16,6 @@ def compute():
     try:
         data = request.json
         print("✅ Received Data:", data)  # Debugging line
-
         if not data:
             print("❌ Missing request body")
             return jsonify({"error": "Missing request body"}), 400
