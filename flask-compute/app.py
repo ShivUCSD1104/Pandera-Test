@@ -6,8 +6,6 @@ from flask_cors import CORS
 IVSURFACE_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 sys.path.insert(0, IVSURFACE_PATH)
 
-from IVSurface.IVmap import generate_iv_surface_html
-
 app = Flask(__name__)
 CORS(app)
 
@@ -28,6 +26,7 @@ def compute():
 
         if graph_type == 'IVMap':
             from IVSurface.IVmap import generate_iv_surface_html
+            print("✅ Generating IV Surface") 
             fig_json = generate_iv_surface_html(
                 parameters.get('Ticker', 'AAPL'),
                 parameters.get('Start Date'),

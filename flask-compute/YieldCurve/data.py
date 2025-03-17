@@ -1,58 +1,59 @@
-import yfinance as yf
-import pandas as pd
+import re
 import numpy as np
+import pandas as pd
+import os
+import sys
+from db import SessionLocal, YieldData
+
+current_dir = os.path.dirname(os.path.abspath(__file__))
+parent_dir = os.path.dirname(current_dir)
+if parent_dir not in sys.path:
+    sys.path.insert(0, parent_dir)
+
+def parse_maturity(label):
+    match = re.match(r"(\d+)\s*(-?)(Month|M|Year|Y)", label, re.IGNORECASE)
+    if match:
+        num = int(match.group(1))
+        unit = match.group(3).lower()
+        if unit in ['month', 'm']:
+            return num
+        elif unit in ['year', 'y']:
+            return num * 12
+    num_match = re.search(r'\d+', label)
+    return int(num_match.group()) if num_match else label
 
 def get_yield_data(start_date, end_date):
-    tickers = {
-        "^IRX": "3-Month",
-        "^FVX": "5-Year",
-        "^TNX": "10-Year",
-        "^TYX": "30-Year",
-    }
-
-    data = {}
-    for ticker, label in tickers.items():
-        try:
-            df = yf.download(ticker, start=start_date, end=end_date)
-            if not df.empty:
-                # Ensure we get a Series (1D) even if yfinance returns DataFrame
-                close_data = df["Close"].squeeze()  # Fix here
-                if isinstance(close_data, pd.Series):
-                    data[label] = close_data
-                else:
-                    print(f"Unexpected data format for {label} ({ticker})")
-            else:
-                print(f"No data for {label} ({ticker})")
-        except Exception as e:
-            print(f"Error fetching {label}: {e}")
-
-    yield_data = pd.DataFrame(columns=['Date', 'Maturity', 'Yield'])
-    for label, series in data.items():
-        maturity = {
-            "3-Month": 3,
-            "5-Year": 60,
-            "10-Year": 120,
-            "30-Year": 360
-        }[label]
+    session = SessionLocal()
+    try:
+        records = session.query(YieldData).filter(
+            YieldData.date >= start_date,
+            YieldData.date <= end_date
+        ).all()
+        if not records:
+            return np.array([]), np.array([]), np.array([])
         
-        # Ensure all columns are 1D arrays
-        temp_df = pd.DataFrame({
-            'Date': series.index,         # 1D DatetimeIndex
-            'Maturity': [maturity] * len(series),  # Explicit 1D list
-            'Yield': series.values        # 1D array
-        })
-        yield_data = pd.concat([yield_data, temp_df])
-
-    # Handle empty data edge case
-    if yield_data.empty:
-        return np.array([]), np.array([]), np.array([])  # Return empty arrays
-
-    # Pivot and clean
-    pivot_yield = yield_data.pivot(index='Date', columns='Maturity', values='Yield')
-    pivot_yield = pivot_yield[[3, 60, 120, 360]]  # Ensure column order
-
-    return (
-        pivot_yield.columns.to_numpy(),  # Maturities (x)
-        pivot_yield.index.to_numpy(),    # Dates (y)
-        pivot_yield.to_numpy()           # Yields (z)
-    )
+        data = []
+        for r in records:
+            maturity = parse_maturity(r.label)
+            data.append({
+                "date": r.date,
+                "maturity": maturity,
+                "yield": float(r.close)
+            })
+        df = pd.DataFrame(data)
+        
+        pivot_yield = df.pivot(index='date', columns='maturity', values='yield')
+        desired_maturities = [3, 60, 120, 360]
+        available = [m for m in desired_maturities if m in pivot_yield.columns]
+        pivot_yield = pivot_yield[available] if available else pd.DataFrame()
+        
+        if pivot_yield.empty:
+            return np.array([]), np.array([]), np.array([])
+        
+        return (
+            pivot_yield.columns.to_numpy(),
+            pivot_yield.index.to_numpy(),
+            pivot_yield.to_numpy()
+        )
+    finally:
+        session.close()

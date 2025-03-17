@@ -14,7 +14,7 @@ app.post('/api/compute', async (req, res) => {
   try {
     const { parameters, graphType } = req.body;
     const response = await axios.post('https://flask.pandera.net/compute', { parameters, graphType });
-    
+    // const response = await axios.post('http://127.0.0.1:5001/compute', { parameters, graphType });
     res.json(response.data);
   } catch (error) {
     console.error('Error communicating with Python server:', error);
