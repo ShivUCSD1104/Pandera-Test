@@ -76,6 +76,8 @@ const Modal = ({ isOpen, onClose, cardData }: ModalProps) => {
   const [plotData, setPlotData] = useState<PlotData | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  // State for the animated dots
+  const [dotCount, setDotCount] = useState(0);
 
   useEffect(() => {
     const { startDate, endDate } = getDateRange(cardData.type);
@@ -85,6 +87,19 @@ const Modal = ({ isOpen, onClose, cardData }: ModalProps) => {
       'End Date': prev['End Date'] || endDate.toISOString().split('T')[0],
     }));
   }, [cardData.type]);
+
+  // Effect to update the dots while loading
+  useEffect(() => {
+    let interval: NodeJS.Timeout | null = null;
+    if (loading) {
+      interval = setInterval(() => {
+        setDotCount(prev => (prev + 1) % 4); // cycles 0, 1, 2, 3
+      }, 500);
+    }
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [loading]);
 
   const handleSelectionChange = (label: string, value: string) => {
     setSelections(prev => ({ ...prev, [label]: value }));
@@ -202,7 +217,9 @@ const Modal = ({ isOpen, onClose, cardData }: ModalProps) => {
           <div className="w-2/3 p-4 h-full">
             <div className="bg-fuchsia-100 rounded-lg h-full flex justify-center items-center overflow-auto">
               {loading ? (
-                <span>Loading...</span>
+                <span style={{ color: 'black', fontWeight: 'bold', fontSize: '1.2rem' }}>
+                  Loading{'.'.repeat(dotCount)}
+                </span>
               ) : error ? (
                 <span className="text-red-500">{error}</span>
               ) : plotData ? (
